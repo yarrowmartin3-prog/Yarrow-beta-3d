@@ -1,6 +1,10 @@
-# 💰 Budget détaillé – Yarrow Beta 3D
+# 💰 Budget – Yarrow Beta 3D
 
-## 📦 Pièces principales
+## ✅ Prototype officiel
+**Mode Complet Hydroponique (Beta 45 cm)**  
+Total estimé : **~155 $ CAD**
+
+### Composants inclus
 | Composant                  | Prix approx. (CAD) | Fournisseur possible |
 |-----------------------------|---------------------|-----------------------|
 | LED croissance (bande 12V) | 20 $               | Amazon / eBay Canada |
@@ -10,20 +14,23 @@
 | ESP8266 (WiFi)             | 12 $               | Digi-Key / Amazon    |
 | Relais 5V (x2)             | 8 $                | Amazon / RobotShop   |
 | Câbles, connecteurs        | 10 $               | Amazon               |
-| Boîtier alim 12V 5A        | 20 $               | Amazon / AliExpress  |
-
-### ✅ Total Mode Écono : ~130 $ CAD
+| Alimentation 12V 5A        | 20 $               | Amazon / AliExpress  |
 
 ---
 
-## 🔧 Capteurs optionnels
-| Capteur                     | Prix approx. (CAD) |
-|------------------------------|---------------------|
-| Capteur humidité/air (DHT22)| 10 $               |
-| Capteur pH                  | 25 $               |
-| Capteur niveau d’eau        | 10 $               |
+## 🔹 Mode Écono (prototype simplifié)
+**Total estimé : ~130 $ CAD**  
+Sans relais et avec une alimentation plus petite (12V 2A).  
 
-### Option avec capteurs : +45 $ CAD
+---
+
+## 🔹 Option avancée avec capteurs
+**Total estimé : ~200 $ CAD**  
+
+Capteurs supplémentaires :  
+- Humidité/air (DHT22) → 10 $  
+- Niveau d’eau (flotteur simple) → 10 $  
+- pH (kit DFRobot) → 25 $  
 
 ---
 
