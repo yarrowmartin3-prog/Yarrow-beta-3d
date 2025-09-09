@@ -1,1 +1,42 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Yarrow Beta 3D</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; text-align: center; padding: 20px; }
+    h1 { color: #2e7d32; }
+    .button {
+      display: inline-block;
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+    }
+    .led { background: #ff9800; }
+    .fan { background: #2196f3; }
+    .pump { background: #4caf50; }
+  </style>
+</head>
+<body>
+  <h1>🌱 Dashboard – Yarrow Beta 3D</h1>
+  <p>Prototype Mode Complet Hydroponique</p>
+
+  <button class="button led" onclick="toggle('LED')">LED ON/OFF</button>
+  <button class="button fan" onclick="toggle('FAN')">Fan ON/OFF</button>
+  <button class="button pump" onclick="toggle('PUMP')">Pump ON/OFF</button>
+
+  <h2 id="status">Status: Waiting…</h2>
+
+  <script>
+    function toggle(device) {
+      document.getElementById("status").innerText = device + " command sent!";
+      // ⚠️ Ici on pourrait envoyer la commande à l’ESP8266 (ex: via requête HTTP)
+    }
+  </script>
+</body>
+</html>
