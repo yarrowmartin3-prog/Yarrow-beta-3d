@@ -1,12 +1,18 @@
-/* Ombre sous le logo */
-.logo {
-  display: block;
-  margin: 20px auto;
-  max-width: 200px;
-  filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.2));
+/* Style global */
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+  color: #333;
 }
 
-/* Ombre sous les boutons */
+h1, h2 {
+  margin: 20px 0;
+}
+
+/* Boutons */
 .btn {
   display: inline-block;
   background: #4caf50;
@@ -23,4 +29,25 @@
 .btn:hover {
   background: #388e3c;
   transform: scale(1.05);
+}
+
+/* Badge d’authenticité Tesla */
+.auth-badge {
+  position: fixed;
+  bottom: 15px;
+  left: 15px; /* coin gauche */
+  opacity: 0.4; /* style gravure */
+  max-width: 90px;
+  z-index: 1000;
+}
+.auth-badge img {
+  width: 100%;
+}
+
+/* Signature Tesla en bas */
+.tesla-sig {
+  display: block;
+  margin: 20px auto;
+  max-width: 200px;
+  opacity: 0.7;
 }
