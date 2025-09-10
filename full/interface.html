@@ -3,98 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Version Complète - Yarrow Beta 3D</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Version complète - Yarrow Beta 3D</title>
   <link rel="stylesheet" href="../style.css">
+  <link rel="icon" type="image/png" href="../assets/logo.png">
+  <style>
+    .logo {
+      max-width: 120px;
+      margin: 15px auto;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <h1>🌱 Version Complète - Yarrow Beta 3D</h1>
-  <p>Interface avancée avec capteurs, graphiques et commandes.</p>
+  <!-- Logo -->
+  <img src="../assets/logo.png" alt="Logo Yarrow Beta 3D" class="logo">
 
-  <div class="card">
-    <h2>Statut en temps réel</h2>
-    <p>🌡 Température : <span id="temp">-- °C</span></p>
-    <p>💧 Humidité : <span id="humidity">-- %</span></p>
-    <p>📊 Niveau d’eau : <span id="water">-- %</span></p>
-  </div>
+  <!-- Titre -->
+  <h1>🔹 Version complète - Yarrow Beta 3D</h1>
+  <p>Voici l’interface complète avec toutes les fonctionnalités.</p>
 
-  <div class="card">
-    <h2>Graphiques des capteurs</h2>
-    <canvas id="tempChart"></canvas>
-    <canvas id="humidityChart"></canvas>
-    <canvas id="waterChart"></canvas>
-  </div>
-
-  <div class="card">
-    <h2>Contrôle manuel</h2>
-    <button onclick="toggleLed()">💡 LED</button>
-    <button onclick="togglePump()">💧 Pompe</button>
-    <button onclick="toggleFan()">🌬 Ventilateur</button>
-  </div>
-
-  <!-- Bouton retour au menu -->
-  <p>
-    <a href="../menu.html" class="menu-link">⬅️ Retour au Menu</a>
-  </p>
-
-  <script>
-    // --- Simulation des données ---
-    function getRandom(min, max) {
-      return (Math.random() * (max - min) + min).toFixed(1);
-    }
-
-    // Initialisation capteurs
-    function updateSensors() {
-      document.getElementById("temp").textContent = getRandom(20, 25) + " °C";
-      document.getElementById("humidity").textContent = getRandom(50, 70) + " %";
-      document.getElementById("water").textContent = getRandom(60, 90) + " %";
-    }
-    setInterval(updateSensors, 2000);
-
-    // --- Graphiques ---
-    const labels = [];
-    const tempData = [];
-    const humidityData = [];
-    const waterData = [];
-
-    function addData(chart, data) {
-      if (chart.data.labels.length > 10) {
-        chart.data.labels.shift();
-        chart.data.datasets[0].data.shift();
-      }
-      chart.data.labels.push(new Date().toLocaleTimeString());
-      chart.data.datasets[0].data.push(data);
-      chart.update();
-    }
-
-    const tempChart = new Chart(document.getElementById('tempChart'), {
-      type: 'line',
-      data: { labels, datasets: [{ label: 'Température (°C)', data: tempData, borderColor: 'red' }] },
-      options: { responsive: true }
-    });
-
-    const humidityChart = new Chart(document.getElementById('humidityChart'), {
-      type: 'line',
-      data: { labels, datasets: [{ label: 'Humidité (%)', data: humidityData, borderColor: 'blue' }] },
-      options: { responsive: true }
-    });
-
-    const waterChart = new Chart(document.getElementById('waterChart'), {
-      type: 'line',
-      data: { labels, datasets: [{ label: 'Niveau d’eau (%)', data: waterData, borderColor: 'green' }] },
-      options: { responsive: true }
-    });
-
-    setInterval(() => {
-      addData(tempChart, getRandom(20, 25));
-      addData(humidityChart, getRandom(50, 70));
-      addData(waterChart, getRandom(60, 90));
-    }, 2000);
-
-    // --- Contrôles simulés ---
-    function toggleLed() { alert("💡 LED activée (simulation)"); }
-    function togglePump() { alert("💧 Pompe activée (simulation)"); }
-    function toggleFan() { alert("🌬 Ventilateur activé (simulation)"); }
-  </script>
+  <!-- Bouton retour -->
+  <a href="../menu.html" class="btn">⬅️ Retour au menu</a>
 </body>
 </html>
