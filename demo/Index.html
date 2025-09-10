@@ -5,45 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Démo - Yarrow Beta 3D</title>
   <link rel="stylesheet" href="../style.css">
+  <link rel="icon" type="image/png" href="../assets/logo.png">
+  <style>
+    .logo {
+      max-width: 120px;
+      margin: 15px auto;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <h1>🌱 Démo - Yarrow Beta 3D</h1>
-  <p>Interface simplifiée pour présentation.</p>
+  <!-- Logo -->
+  <img src="../assets/logo.png" alt="Logo Yarrow Beta 3D" class="logo">
 
-  <div class="card">
-    <h2>Statut des capteurs</h2>
-    <p>🌡 Température : <span id="temp">-- °C</span></p>
-    <p>💧 Humidité : <span id="humidity">-- %</span></p>
-    <p>📊 Niveau d’eau : <span id="water">-- %</span></p>
-  </div>
+  <!-- Titre -->
+  <h1>🔹 Démo - Yarrow Beta 3D</h1>
+  <p>Voici la version de démonstration de l’interface.</p>
 
-  <div class="card">
-    <h2>Contrôle</h2>
-    <button onclick="toggleLed()">Allumer LED</button>
-    <button onclick="togglePump()">Activer Pompe</button>
-  </div>
-
-  <!-- Bouton retour au menu -->
-  <p>
-    <a href="../menu.html" class="menu-link">⬅️ Retour au Menu</a>
-  </p>
-
-  <script>
-    // Simulation de valeurs
-    function updateSensors() {
-      document.getElementById("temp").textContent = (20 + Math.random()*5).toFixed(1) + " °C";
-      document.getElementById("humidity").textContent = (50 + Math.random()*20).toFixed(0) + " %";
-      document.getElementById("water").textContent = (60 + Math.random()*30).toFixed(0) + " %";
-    }
-    setInterval(updateSensors, 2000);
-
-    // Simulations de boutons
-    function toggleLed() {
-      alert("💡 LED activée (simulation)");
-    }
-    function togglePump() {
-      alert("💧 Pompe activée (simulation)");
-    }
-  </script>
+  <!-- Bouton retour -->
+  <a href="../menu.html" class="btn">⬅️ Retour au menu</a>
 </body>
 </html>
