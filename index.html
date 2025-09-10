@@ -1,53 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Yarrow Beta 3D</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="icon" type="image/png" href="assets/logo-yarrow-flower.png"/>
+  <meta charset="UTF-8">
+  <title>Yarrow Assistant</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <img src="assets/logo-yarrow-flower.png" alt="Logo Yarrow" class="logo"/>
+  <h1>🌱 Yarrow Assistant</h1>
 
-  <h1>🌱 Yarrow Beta 3D</h1>
+  <!-- Compatibilité -->
+  <p id="capabilities"></p>
 
-  <!-- Compatibilité navigateur -->
-  <p id="capabilities" class="hint"></p>
-
-  <!-- Choix avatar + voix -->
-  <div class="panel">
-    <div class="avatar-box">
-      <img id="assistantAvatar" src="assets/assistant-1.png" alt="Assistant" class="avatar"/>
-      <div class="avatar-choices">
-        <button class="avatar-btn" data-src="assets/assistant-1.png">🙂</button>
-        <button class="avatar-btn" data-src="assets/assistant-2.png">🧑‍🔧</button>
-        <button class="avatar-btn" data-src="assets/assistant-3.png">🤖</button>
-      </div>
-    </div>
-
-    <div class="voice-box">
-      <label for="voiceSelect">🔊 Voix :</label>
-      <select id="voiceSelect">
-        <option value="">(Chargement des voix…)</option>
-      </select>
-    </div>
+  <!-- Avatar -->
+  <img id="assistantAvatar" src="assistant-1.png" alt="Assistant" class="avatar">
+  <div>
+    <button data-src="assistant-1.png">🙂</button>
+    <button data-src="assistant-2.png">🤖</button>
+    <button data-src="assistant-3.png">🧑‍🔧</button>
   </div>
 
-  <h2>🗣️ Test de la voix</h2>
-  <button id="start-voice" class="btn">🎤 Parler</button>
+  <!-- Choix de voix -->
+  <label>Voix : <select id="voiceSelect"></select></label>
+
+  <!-- Bouton & résultat -->
+  <button id="start-voice">🎤 Parler</button>
   <p id="output"></p>
-
-  <!-- Lien vers demo/full si besoin -->
-  <div class="links">
-    <a href="demo/index.html" class="btn">Démo</a>
-    <a href="full/interface.html" class="btn">Version complète</a>
-  </div>
-
-  <!-- Badge Tesla -->
-  <div class="auth-badge">
-    <img src="assets/tesla-badge-auth-classic.png" alt="Badge Tesla"/>
-  </div>
 
   <script src="voice.js"></script>
 </body>
