@@ -36,4 +36,65 @@
   <div class="row">
     <label for="voiceSelect">Voix :</label>
     <select id="voiceSelect"><option>(chargement)</option></select>
-    <button id="start-voice" class="primary">🎤 Parler
+    <button id="start-voice" class="primary">🎤 Parler</button>
+  </div>
+
+  <p id="output"></p>
+
+  <script>
+    // -------- CONFIG --------
+    const API_BASE = "https://yarrow-ai-server.vercel.app"; // ← remplace si ton URL Vercel est différente
+
+    // -------- UTIL --------
+    const $ = id => document.getElementById(id);
+    const setText = (el, t) => el && (el.textContent = t);
+
+    // -------- SELECTEURS --------
+    const startBtn = $("start-voice");
+    const output = $("output");
+    const capabilities = $("capabilities");
+    const voiceSelect = $("voiceSelect");
+    const avatarImg = $("assistantAvatar");
+
+    // -------- COMPATIBILITÉ --------
+    const supportsRecognition = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+    const supportsSynthesis = "speechSynthesis" in window;
+
+    if (supportsRecognition && supportsSynthesis) {
+      setText(capabilities, "✅ Compatible : écoute et voix disponibles");
+    } else if (supportsRecognition) {
+      setText(capabilities, "⚠️ Écoute seulement, pas de voix");
+    } else if (supportsSynthesis) {
+      setText(capabilities, "⚠️ Voix seulement, pas d’écoute (utilise Chrome Android pour le micro)");
+    } else {
+      setText(capabilities, "❌ Pas compatible sur ce navigateur");
+    }
+
+    // -------- AVATARS --------
+    document.querySelectorAll("button[data-src]").forEach(b=>{
+      b.addEventListener("click", ()=> { avatarImg.src = b.getAttribute("data-src"); });
+    });
+
+    // -------- VOIX --------
+    let voices = [];
+    function loadVoices(){
+      if (!supportsSynthesis) return;
+      voices = speechSynthesis.getVoices();
+      voiceSelect.innerHTML = "";
+      if (!voices.length) {
+        const o = document.createElement("option"); o.text = "(aucune voix trouvée)"; voiceSelect.add(o);
+        return;
+      }
+      voices
+        .sort((a,b)=>(b.lang.startsWith("fr")-a.lang.startsWith("fr"))||a.name.localeCompare(b.name))
+        .forEach(v=>{
+          const o = document.createElement("option");
+          o.value = v.name; o.text = `${v.name} (${v.lang})`;
+          voiceSelect.add(o);
+        });
+      const fr = voices.find(v=>v.lang.startsWith("fr"));
+      if (fr) voiceSelect.value = fr.name;
+    }
+    if (supportsSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+
+    // -------- RECONNA
