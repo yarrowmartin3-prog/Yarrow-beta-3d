@@ -22,7 +22,7 @@
   <h1>🌱 Yarrow Assistant</h1>
 
   <!-- Compatibilité -->
-  <p id="capabilities">Chargement…</p>
+  <p id="capabilities">Chargement...</p>
 
   <!-- Avatar + choix -->
   <img id="assistantAvatar" src="assistant-1.png" alt="Assistant" class="avatar">
@@ -37,13 +37,14 @@
     <label for="voiceSelect">Voix :</label>
     <select id="voiceSelect"><option>(chargement)</option></select>
     <button id="start-voice" class="primary">🎤 Parler</button>
+    <button id="test-tts">🔊 Tester la voix</button>
   </div>
 
   <p id="output"></p>
 
   <script>
     // -------- CONFIG --------
-    const API_BASE = "https://yarrow-ai-server.vercel.app"; // ← remplace si ton URL Vercel est différente
+    const API_BASE = "https://yarrow-ai-server.vercel.app"; // mets ici ton URL Vercel exacte si différente
 
     // -------- UTIL --------
     const $ = id => document.getElementById(id);
@@ -97,4 +98,65 @@
     }
     if (supportsSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
 
-    // -------- RECONNA
+    // -------- RECONNAISSANCE + IA --------
+    if (supportsRecognition){
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const rec = new SR();
+      rec.lang = "fr-FR";
+      rec.interimResults = false;
+
+      startBtn.addEventListener("click", ()=>{
+        rec.start();
+        setText(output,"🎤 J’écoute…");
+      });
+
+      rec.addEventListener("result", async (e)=>{
+        const transcript = e.results[0][0].transcript;
+        setText(output, "👂 J’ai entendu : " + transcript + " — envoi à l’IA…");
+        try{
+          const r = await fetch(`${API_BASE}/api/chat`, {
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body: JSON.stringify({ userText: transcript })
+          });
+          const data = await r.json();
+          const answer = data.answer || "(pas de réponse)";
+          setText(output, "🤖 IA : " + answer);
+
+          if (supportsSynthesis){
+            const v = voices.find(v=>v.name===voiceSelect.value);
+            const utter = new SpeechSynthesisUtterance(answer);
+            if (v) utter.voice = v;
+            utter.lang = (v && v.lang) || "fr-FR";
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utter);
+          }
+        }catch(err){
+          setText(output, "❌ Erreur API : " + err);
+        }
+      });
+
+      rec.addEventListener("end", ()=>{ setText(output, (output.textContent||"") + " (fin de l’écoute)"); });
+    }
+
+    // -------- TEST TTS --------
+    document.getElementById("test-tts").addEventListener("click", () => {
+      if (!("speechSynthesis" in window)) {
+        alert("Synthèse vocale non dispo");
+        return;
+      }
+      const u = new SpeechSynthesisUtterance("Bonjour, ceci est un test de la voix.");
+      const v = voices.find(v => v.name === voiceSelect.value);
+      if (v) u.voice = v;
+      u.lang = (v && v.lang) || "fr-FR";
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    });
+
+    // -------- DIAG RAPIDE --------
+    window.onerror = (msg, src, line, col, err) => {
+      setText(output, "❌ JS error: " + msg);
+    };
+  </script>
+</body>
+</html>
