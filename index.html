@@ -1,61 +1,54 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Accueil - Yarrow Beta 3D</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="assets/logo-yarrow-flower.png">
-  <style>
-    .logo {
-      max-width: 200px;
-      margin: 20px auto;
-      display: block;
-    }
-    .beta {
-      max-width: 400px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      margin: 20px auto;
-      display: block;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yarrow Beta 3D</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="icon" type="image/png" href="assets/logo-yarrow-flower.png"/>
 </head>
 <body>
-  <!-- Nouveau logo avec fleur -->
-  <img src="assets/logo-yarrow-flower.png" alt="Logo Yarrow Beta 3D avec fleur" class="logo">
+  <img src="assets/logo-yarrow-flower.png" alt="Logo Yarrow" class="logo"/>
 
-  <!-- Titre -->
   <h1>🌱 Yarrow Beta 3D</h1>
-  <p>Bienvenue dans le projet Yarrow Beta 3D.<br>
-  Choisissez une version de l’interface :</p>
 
-  <!-- Boutons -->
-  <a href="demo/index.html" class="btn">🔹 Démo</a>
-  <a href="full/interface.html" class="btn">🔹 Version Complète</a>
+  <!-- Compatibilité navigateur -->
+  <p id="capabilities" class="hint"></p>
 
-  <hr>
+  <!-- Choix avatar + voix -->
+  <div class="panel">
+    <div class="avatar-box">
+      <img id="assistantAvatar" src="assets/assistant-1.png" alt="Assistant" class="avatar"/>
+      <div class="avatar-choices">
+        <button class="avatar-btn" data-src="assets/assistant-1.png">🙂</button>
+        <button class="avatar-btn" data-src="assets/assistant-2.png">🧑‍🔧</button>
+        <button class="avatar-btn" data-src="assets/assistant-3.png">🤖</button>
+      </div>
+    </div>
 
-  <!-- Photo du prototype Beta -->
-  <h2>📸 Prototype Beta</h2>
-  <img src="assets/beta.jpg" alt="Photo du modèle Beta" class="beta">
+    <div class="voice-box">
+      <label for="voiceSelect">🔊 Voix :</label>
+      <select id="voiceSelect">
+        <option value="">(Chargement des voix…)</option>
+      </select>
+    </div>
+  </div>
 
-  <hr>
-
-  <!-- Section IA voix -->
   <h2>🗣️ Test de la voix</h2>
   <button id="start-voice" class="btn">🎤 Parler</button>
   <p id="output"></p>
 
-  <!-- Script voix -->
-  <script src="voice.js"></script>
-
-  <!-- Badge d’authenticité Tesla -->
-  <div class="auth-badge">
-    <img src="assets/tesla-badge-auth-classic.png" alt="Badge Tesla Authentique">
+  <!-- Lien vers demo/full si besoin -->
+  <div class="links">
+    <a href="demo/index.html" class="btn">Démo</a>
+    <a href="full/interface.html" class="btn">Version complète</a>
   </div>
 
-  <!-- Signature Tesla en bas -->
-  <img src="assets/tesla-signature-white.png" alt="Signature Nikola Tesla" class="tesla-sig">
+  <!-- Badge Tesla -->
+  <div class="auth-badge">
+    <img src="assets/tesla-badge-auth-classic.png" alt="Badge Tesla"/>
+  </div>
+
+  <script src="voice.js"></script>
 </body>
 </html>
