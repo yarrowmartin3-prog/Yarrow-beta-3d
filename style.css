@@ -1,23 +1,31 @@
-body { font-family: Arial, sans-serif; margin:0; text-align:center; background:#f5f5f5; color:#333; }
-h1,h2 { margin:16px 0; }
-.logo { max-width:200px; display:block; margin:20px auto; }
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Yarrow Assistant</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🌱 Yarrow Assistant</h1>
 
-.btn { display:inline-block; background:#4caf50; color:#fff; padding:12px 18px; margin:8px; border-radius:8px; text-decoration:none; box-shadow:0 4px 8px rgba(0,0,0,.15); }
-.btn:hover { background:#3e8e41; }
+  <!-- Compatibilité -->
+  <p id="capabilities"></p>
 
-.hint { color:#555; margin:6px 0 14px; font-size:.95em; }
+  <!-- Avatar -->
+  <img id="assistantAvatar" src="assistant-1.png" alt="Assistant" class="avatar">
+  <div>
+    <button data-src="assistant-1.png">🙂</button>
+    <button data-src="assistant-2.png">🤖</button>
+    <button data-src="assistant-3.png">🧑‍🔧</button>
+  </div>
 
-.panel { display:flex; gap:16px; justify-content:center; align-items:center; flex-wrap:wrap; margin:10px auto 20px; }
-.avatar-box { display:flex; flex-direction:column; align-items:center; gap:8px; }
-.avatar { width:96px; height:96px; border-radius:50%; object-fit:cover; box-shadow:0 2px 8px rgba(0,0,0,.2); background:#fff; }
-.avatar-choices { display:flex; gap:6px; }
-.avatar-btn { padding:6px 10px; border-radius:8px; border:1px solid #ddd; background:#fff; }
-.avatar-btn:active { transform:scale(.97); }
+  <!-- Choix de voix -->
+  <label>Voix : <select id="voiceSelect"></select></label>
 
-.voice-box { display:flex; align-items:center; gap:8px; background:#fff; padding:8px 12px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,.1); }
-#voiceSelect { padding:6px; border-radius:8px; border:1px solid #ccc; min-width:220px; }
+  <!-- Bouton & résultat -->
+  <button id="start-voice">🎤 Parler</button>
+  <p id="output"></p>
 
-.links { margin:14px 0 28px; }
-
-.auth-badge { position:fixed; bottom:15px; left:15px; opacity:.4; max-width:90px; z-index:1000; }
-.auth-badge img { width:100%; }
+  <script src="voice.js"></script>
+</body>
+</html>
