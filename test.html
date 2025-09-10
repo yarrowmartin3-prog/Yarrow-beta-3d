@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Test Yarrow API</title>
+<style>
+  body{font-family:system-ui,Arial,sans-serif;max-width:720px;margin:40px auto;padding:16px}
+  h1{margin:0 0 16px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  input,textarea,button{padding:10px;border:1px solid #bbb;border-radius:8px}
+  textarea{width:100%;min-height:90px}
+  button.primary{background:#4caf50;color:#fff;border:0}
+  #log{white-space:pre-wrap;background:#f7f7f7;border:1px solid #ddd;border-radius:8px;padding:10px;min-height:80px}
+  small{color:#555}
+</style>
+</head>
+<body>
+<h1>🔧 Test Yarrow API</h1>
+
+<label>API_BASE (ton serveur Vercel) :</label>
+<input id="base" value="https://yarrow-ai-server.vercel.app" style="width:100%" />
+
+<h2>1) Test CHAT (texte ➜ texte)</h2>
+<textarea id="msg">Dis-moi bonjour en une phrase.</textarea>
+<div class="row">
+  <button id="btnChat" class="primary">Tester /api/chat</button>
+</div>
+
+<h2>2) Test TTS (texte ➜ mp3)</h2>
+<textarea id="msgTts">Bonjour, ceci est un test de la voix Yarrow.</textarea>
+<div class="row">
+  <button id="btnTts" class="primary">Tester /api/tts</button>
+  <audio id="audio" controls></audio>
+</div>
+
+<h2>3) (iPhone) Test STT (micro ➜ texte)</h2>
+<div class="row">
+  <button id="btnStt" class="primary">Enregistrer 5 s & tester /api/stt</button>
+</div>
+
+<h2>Résultat / Logs</h2>
+<div id="log"></div>
+
+<script>
+const $ = (id)=>document.getElementById(id);
+const log = (t)=>{ $("log").textContent = t; };
+
+async function testChat(){
+  const API = $("base").value.trim();
+  log("Appel /api/chat…");
+  try{
+    const r = await fetch(API + "/api/chat", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ userText: $("msg").value })
+    });
+    const data = await r.json();
+    log("Réponse:\n" + JSON.stringify(data, null, 2));
+  }catch(e){ log("Erreur: " + e); }
+}
+
+async function testTts(){
+  const API = $("base").value.trim();
+  log("Appel /api/tts…");
+  try{
+    const r = await fetch(API + "/api/tts", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ text: $("msgTts").value })
+    });
+    if(!r.ok){ log("Erreur HTTP: " + r.status + " " + (await r.text())); return; }
+    const blob = new Blob([await r.arrayBuffer()], { type:"audio/mpeg" });
+    const url = URL.createObjectURL(blob);
+    $("audio").src = url;
+    log("OK: audio prêt. Appuie sur ▶️ pour écouter.");
+  }catch(e){ log("Erreur: " + e); }
+}
+
+async function testStt(){
+  const API = $("base").value.trim();
+  log("Demande micro…");
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    const mime = MediaRecorder.isTypeSupported('audio/mp4;codecs=mp4a') ? 'audio/mp4;codecs=mp4a' : 'audio/webm';
+    const rec = new MediaRecorder(stream, { mimeType: mime });
+    const chunks = [];
+    rec.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+    rec.onstop = async ()=>{
+      log("Envoi à /api/stt…");
+      const fd = new FormData();
+      fd.append("audio", new Blob(chunks, { type: mime }), mime.includes("mp4") ? "speech.m4a" : "speech.webm");
+      const r = await fetch(API + "/api/stt", { method:"POST", body: fd });
+      const data = await r.json();
+      log("Texte transcrit:\n" + JSON.stringify(data, null, 2));
+    };
+    rec.start();
+    log("🎙️ Enregistrement 5 s… parle maintenant…");
+    setTimeout(()=>rec.stop(), 5000);
+  }catch(e){ log("Erreur micro/STT: " + e); }
+}
+
+$("btnChat").onclick = testChat;
+$("btnTts").onclick  = testTts;
+$("btnStt").onclick  = testStt;
+</script>
+</body>
+</html>
