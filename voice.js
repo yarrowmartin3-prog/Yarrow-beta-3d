@@ -1,70 +1,57 @@
-// --- Détection des capacités navigateur ---
-const supportsRecognition = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
-const supportsSynthesis = 'speechSynthesis' in window;
+// URL de ton serveur Vercel
+const API_BASE = "https://yarrow-ai-server.vercel.app";
 
-// --- Sélecteurs DOM ---
-const startBtn = document.getElementById('start-voice');
-const output = document.getElementById('output');
-const capabilities = document.getElementById('capabilities');
+// Vérifie si la reconnaissance vocale est dispo
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const synth = window.speechSynthesis;
 
-// Sécurités si la page ne contient pas les éléments
-function safeText(el, text) { if (el) el.textContent = text; }
-function safeDisable(el, v) { if (el) el.disabled = !!v; }
+// Sélecteurs HTML
+const startBtn = document.getElementById("start-voice");
+const output = document.getElementById("output");
 
-// --- Affichage de l'état au chargement ---
-window.addEventListener('load', () => {
-  let msg = '';
-
-  if (supportsRecognition && supportsSynthesis) {
-    msg = '✅ Compatible : écoute (reconnaissance vocale) + voix (synthèse) disponibles.';
-  } else if (supportsRecognition && !supportsSynthesis) {
-    msg = '⚠️ Partiel : écoute disponible, mais la synthèse vocale (voix) ne l’est pas.';
-  } else if (!supportsRecognition && supportsSynthesis) {
-    msg = '⚠️ Partiel : la page peut parler, mais ne peut pas écouter. Essaie avec Chrome.';
-  } else {
-    msg = '❌ Non supporté : ni écoute ni voix disponibles sur ce navigateur.';
-  }
-
-  safeText(capabilities, msg);
-  // Désactiver le bouton si on ne peut pas écouter
-  if (!supportsRecognition) safeDisable(startBtn, true);
-});
-
-// --- Logique principale si compatible ---
-if (supportsRecognition) {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
   const recognition = new SpeechRecognition();
-  recognition.lang = 'fr-FR';
+  recognition.lang = "fr-FR";
   recognition.interimResults = false;
 
-  if (startBtn) {
-    startBtn.addEventListener('click', () => {
-      recognition.start();
-      safeText(output, '🎤 Écoute en cours... Parle maintenant.');
-    });
-  }
+  startBtn.addEventListener("click", () => {
+    recognition.start();
+    output.textContent = "🎤 Écoute en cours...";
+  });
 
-  recognition.addEventListener('result', (e) => {
+  recognition.addEventListener("result", async (e) => {
     const transcript = e.results[0][0].transcript;
-    safeText(output, "👂 J'ai entendu : " + transcript);
+    output.textContent = "👂 J'ai entendu : " + transcript + " (envoi à l'IA...)";
 
-    // Réponse parlée si dispo
-    if (supportsSynthesis) {
-      const utter = new SpeechSynthesisUtterance("Tu as dit : " + transcript);
-      utter.lang = 'fr-FR';
-      window.speechSynthesis.speak(utter);
-    } else {
-      // Cas rare : écoute ok mais pas de voix
-      safeText(output, (output.textContent || '') + ' (⚠️ mais ton navigateur ne peut pas parler)');
+    try {
+      const r = await fetch(`${API_BASE}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userText: transcript })
+      });
+
+      const data = await r.json();
+      const answer = data.answer || "(pas de réponse)";
+      output.textContent = "🤖 IA : " + answer;
+
+      if (synth) {
+        const utterance = new SpeechSynthesisUtterance(answer);
+        utterance.lang = "fr-FR";
+        synth.speak(utterance);
+      }
+    } catch (err) {
+      output.textContent = "❌ Erreur API : " + err;
     }
   });
 
-  recognition.addEventListener('end', () => {
-    safeText(output, (output.textContent || '') + ' (fin de l’écoute)');
+  recognition.addEventListener("end", () => {
+    output.textContent += " (fin de l'écoute)";
   });
 
 } else {
-  // Pas de reconnaissance → on a déjà affiché l’état et désactivé le bouton
-  // Si tu veux, on peut aussi préven ir dans la zone output :
-  safeText(output, "ℹ️ Utilise Chrome (PC/Android) pour l’écoute vocale. Safari/iOS ne supporte pas encore cette API.");
+  if (synth) {
+    output.textContent = "⚠️ Ce navigateur peut parler mais pas écouter.";
+  } else {
+    output.textContent = "⚠️ Ni écoute ni voix disponibles sur ce navigateur.";
+  }
 }
