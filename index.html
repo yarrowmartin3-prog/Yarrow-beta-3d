@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Yarrow Assistant</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -11,21 +12,24 @@
   <!-- Compatibilité -->
   <p id="capabilities"></p>
 
-  <!-- Avatar -->
+  <!-- Avatar + choix -->
   <img id="assistantAvatar" src="assistant-1.png" alt="Assistant" class="avatar">
-  <div>
-    <button data-src="assistant-1.png">🙂</button>
-    <button data-src="assistant-2.png">🤖</button>
-    <button data-src="assistant-3.png">🧑‍🔧</button>
+  <div class="row">
+    <button class="small" data-src="assistant-1.png">🙂</button>
+    <button class="small" data-src="assistant-2.png">🤖</button>
+    <button class="small" data-src="assistant-3.png">🧑‍🔧</button>
   </div>
 
-  <!-- Choix de voix -->
-  <label>Voix : <select id="voiceSelect"></select></label>
+  <!-- Voix -->
+  <div class="row">
+    <label for="voiceSelect">Voix :</label>
+    <select id="voiceSelect"></select>
+    <button id="start-voice" class="primary">🎤 Parler</button>
+  </div>
 
-  <!-- Bouton & résultat -->
-  <button id="start-voice">🎤 Parler</button>
   <p id="output"></p>
 
+  <!-- IMPORTANT: charge le JS -->
   <script src="voice.js"></script>
 </body>
 </html>
