@@ -1,42 +1,82 @@
-// === CONFIG ===
-const API_BASE = "https://yarrow-ai-server.vercel.app"; // ⚠️ mets ici ton URL Vercel exacte
+const API_BASE = "https://yarrow-ai-server.vercel.app"; // ton URL Vercel
 
-// === Sélecteurs ===
 const startBtn = document.getElementById("start-voice");
 const output = document.getElementById("output");
 const capabilities = document.getElementById("capabilities");
 const voiceSelect = document.getElementById("voiceSelect");
 const avatarImg = document.getElementById("assistantAvatar");
 
-// === Compatibilité ===
+// Vérif compatibilité
 const supportsRecognition = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 const supportsSynthesis = "speechSynthesis" in window;
 
-function safeText(el, t){ if(el) el.textContent = t; }
-function safeDisable(el, v){ if(el) el.disabled = !!v; }
+if (supportsRecognition && supportsSynthesis) {
+  capabilities.textContent = "✅ Compatible : écoute et voix disponibles";
+} else if (supportsRecognition) {
+  capabilities.textContent = "⚠️ Écoute seulement, pas de voix";
+} else if (supportsSynthesis) {
+  capabilities.textContent = "⚠️ Voix seulement, pas d’écoute";
+} else {
+  capabilities.textContent = "❌ Pas compatible";
+}
 
-// Affiche l’état au chargement
-window.addEventListener("load", () => {
-  let msg = "";
-  if (supportsRecognition && supportsSynthesis) msg = "✅ Compatible : écoute + voix disponibles.";
-  else if (supportsRecognition)              msg = "⚠️ Partiel : écoute OK, voix non disponible.";
-  else if (supportsSynthesis)                msg = "⚠️ Partiel : la page peut parler mais ne peut pas écouter (essaye Chrome).";
-  else                                       msg = "❌ Non supporté : ni écoute ni voix sur ce navigateur.";
-
-  safeText(capabilities, msg);
-  if (!supportsRecognition) safeDisable(startBtn, true);
+// Gestion avatar
+document.querySelectorAll("button[data-src]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    avatarImg.src = btn.getAttribute("data-src");
+  });
 });
 
-// === Gestion des VOIX ===
-let allVoices = [];
-let selectedVoice = null;
-
-function populateVoices() {
-  allVoices = window.speechSynthesis.getVoices();
+// Gestion voix
+let voices = [];
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
   voiceSelect.innerHTML = "";
-
-  if (!allVoices.length) {
+  voices.forEach(v => {
     const opt = document.createElement("option");
-    opt.value = "";
-    opt.textContent = "(Pas de voix dispo / recharger la page)";
-    voiceSelect
+    opt.value = v.name;
+    opt.textContent = `${v.name} (${v.lang})`;
+    voiceSelect.appendChild(opt);
+  });
+}
+if (supportsSynthesis) {
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+// Reconnaissance vocale
+if (supportsRecognition) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SR();
+  recognition.lang = "fr-FR";
+
+  startBtn.addEventListener("click", () => {
+    recognition.start();
+    output.textContent = "🎤 J’écoute...";
+  });
+
+  recognition.addEventListener("result", async (e) => {
+    const transcript = e.results[0][0].transcript;
+    output.textContent = "👂 J’ai entendu : " + transcript;
+
+    try {
+      const r = await fetch(`${API_BASE}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userText: transcript })
+      });
+      const data = await r.json();
+      const answer = data.answer || "(pas de réponse)";
+      output.textContent = "🤖 IA : " + answer;
+
+      if (supportsSynthesis) {
+        const u = new SpeechSynthesisUtterance(answer);
+        const chosen = voices.find(v => v.name === voiceSelect.value);
+        if (chosen) u.voice = chosen;
+        speechSynthesis.speak(u);
+      }
+    } catch (err) {
+      output.textContent = "❌ Erreur API : " + err;
+    }
+  });
+}
