@@ -1,162 +1,59 @@
+ Voici un exemple d'une landing page pour le produit "Yarrow-beta-3d" en utilisant HTML5 et Tailwind CSS.
+
+
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Yarrow Assistant</title>
-  <style>
-    :root { color-scheme: light dark; }
-    body { font-family: Arial, sans-serif; margin:0; padding:20px; text-align:center; background:#f5f5f5; }
-    h1 { margin:10px 0 16px; }
-    .avatar { width:110px; height:110px; border-radius:50%; object-fit:cover; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.15); }
-    .row { display:flex; gap:10px; justify-content:center; align-items:center; margin:12px 0; flex-wrap:wrap; }
-    button { padding:10px 14px; border-radius:10px; border:1px solid #bbb; background:#fff; }
-    button.small { padding:8px 12px; }
-    button.primary { background:#4caf50; color:#fff; border:0; }
-    #voiceSelect { padding:8px; border-radius:8px; border:1px solid #bbb; }
-    #capabilities { color:#555; margin-bottom:10px; }
-    #output { margin:14px auto; max-width:640px; min-height:1.2em; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yarrow-beta-3d - Nova</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-  <h1>🌱 Yarrow Assistant</h1>
+<body class="bg-black text-white font-mono antialiased">
+    <header class="flex items-center justify-between py-8 px-4">
+        <div>
+            <img src="logo.svg" alt="Logo Nova Yarrow-beta-3d" class="h-12">
+        </div>
+        <nav class="flex gap-4">
+            <a href="#" class="hover:underline">Accueil</a>
+            <a href="#" class="hover:underline">Produits</a>
+            <a href="#" class="hover:underline">Contact</a>
+        </nav>
+    </header>
 
-  <!-- Compatibilité -->
-  <p id="capabilities">Chargement...</p>
+    <main class="py-16 px-4">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+            <h1 class="text-4xl lg:text-5xl font-bold">Yarrow-beta-3d</h1>
+            <p class="text-lg md:text-2xl text-blue-500 font-semibold tracking-wider uppercase">Plan 3D industriels et design hardware de la future</p>
+            <button class="py-3 px-6 rounded bg-blue-500 hover:bg-blue-700 text-white transition-colors duration-200">COMMANDER</button>
+        </div>
 
-  <!-- Avatar + choix -->
-  <img id="assistantAvatar" src="assistant-1.png" alt="Assistant" class="avatar">
-  <div class="row">
-    <button class="small" data-src="assistant-1.png">🙂</button>
-    <button class="small" data-src="assistant-2.png">🤖</button>
-    <button class="small" data-src="assistant-3.png">🧑‍🔧</button>
-  </div>
+        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="p-4 bg-gray-700 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                <h2 class="text-xl font-bold mb-2">Automatisation</h2>
+                <p class="mb-4 text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="p-4 bg-gray-700 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                <h2 class="text-xl font-bold mb-2">Sécurité</h2>
+                <p class="mb-4 text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="p-4 bg-gray-700 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                <h2 class="text-xl font-bold mb-2">Performance</h2>
+                <p class="mb-4 text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+        </div>
+    </main>
 
-  <!-- Voix -->
-  <div class="row">
-    <label for="voiceSelect">Voix :</label>
-    <select id="voiceSelect"><option>(chargement)</option></select>
-    <button id="start-voice" class="primary">🎤 Parler</button>
-    <button id="test-tts">🔊 Tester la voix</button>
-  </div>
+    <footer class="py-8 px-4 bg-gray-900 text-white text-center">
+        Copyright Nova Sentinel 2023
+    </footer>
 
-  <p id="output"></p>
-
-  <script>
-    // -------- CONFIG --------
-    const API_BASE = "https://yarrow-ai-server.vercel.app"; // mets ici ton URL Vercel exacte si différente
-
-    // -------- UTIL --------
-    const $ = id => document.getElementById(id);
-    const setText = (el, t) => el && (el.textContent = t);
-
-    // -------- SELECTEURS --------
-    const startBtn = $("start-voice");
-    const output = $("output");
-    const capabilities = $("capabilities");
-    const voiceSelect = $("voiceSelect");
-    const avatarImg = $("assistantAvatar");
-
-    // -------- COMPATIBILITÉ --------
-    const supportsRecognition = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
-    const supportsSynthesis = "speechSynthesis" in window;
-
-    if (supportsRecognition && supportsSynthesis) {
-      setText(capabilities, "✅ Compatible : écoute et voix disponibles");
-    } else if (supportsRecognition) {
-      setText(capabilities, "⚠️ Écoute seulement, pas de voix");
-    } else if (supportsSynthesis) {
-      setText(capabilities, "⚠️ Voix seulement, pas d’écoute (utilise Chrome Android pour le micro)");
-    } else {
-      setText(capabilities, "❌ Pas compatible sur ce navigateur");
-    }
-
-    // -------- AVATARS --------
-    document.querySelectorAll("button[data-src]").forEach(b=>{
-      b.addEventListener("click", ()=> { avatarImg.src = b.getAttribute("data-src"); });
-    });
-
-    // -------- VOIX --------
-    let voices = [];
-    function loadVoices(){
-      if (!supportsSynthesis) return;
-      voices = speechSynthesis.getVoices();
-      voiceSelect.innerHTML = "";
-      if (!voices.length) {
-        const o = document.createElement("option"); o.text = "(aucune voix trouvée)"; voiceSelect.add(o);
-        return;
-      }
-      voices
-        .sort((a,b)=>(b.lang.startsWith("fr")-a.lang.startsWith("fr"))||a.name.localeCompare(b.name))
-        .forEach(v=>{
-          const o = document.createElement("option");
-          o.value = v.name; o.text = `${v.name} (${v.lang})`;
-          voiceSelect.add(o);
-        });
-      const fr = voices.find(v=>v.lang.startsWith("fr"));
-      if (fr) voiceSelect.value = fr.name;
-    }
-    if (supportsSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
-
-    // -------- RECONNAISSANCE + IA --------
-    if (supportsRecognition){
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const rec = new SR();
-      rec.lang = "fr-FR";
-      rec.interimResults = false;
-
-      startBtn.addEventListener("click", ()=>{
-        rec.start();
-        setText(output,"🎤 J’écoute…");
-      });
-
-      rec.addEventListener("result", async (e)=>{
-        const transcript = e.results[0][0].transcript;
-        setText(output, "👂 J’ai entendu : " + transcript + " — envoi à l’IA…");
-        try{
-          const r = await fetch(`${API_BASE}/api/chat`, {
-            method:"POST",
-            headers:{ "Content-Type":"application/json" },
-            body: JSON.stringify({ userText: transcript })
-          });
-          const data = await r.json();
-          const answer = data.answer || "(pas de réponse)";
-          setText(output, "🤖 IA : " + answer);
-
-          if (supportsSynthesis){
-            const v = voices.find(v=>v.name===voiceSelect.value);
-            const utter = new SpeechSynthesisUtterance(answer);
-            if (v) utter.voice = v;
-            utter.lang = (v && v.lang) || "fr-FR";
-            speechSynthesis.cancel();
-            speechSynthesis.speak(utter);
-          }
-        }catch(err){
-          setText(output, "❌ Erreur API : " + err);
-        }
-      });
-
-      rec.addEventListener("end", ()=>{ setText(output, (output.textContent||"") + " (fin de l’écoute)"); });
-    }
-
-    // -------- TEST TTS --------
-    document.getElementById("test-tts").addEventListener("click", () => {
-      if (!("speechSynthesis" in window)) {
-        alert("Synthèse vocale non dispo");
-        return;
-      }
-      const u = new SpeechSynthesisUtterance("Bonjour, ceci est un test de la voix.");
-      const v = voices.find(v => v.name === voiceSelect.value);
-      if (v) u.voice = v;
-      u.lang = (v && v.lang) || "fr-FR";
-      speechSynthesis.cancel();
-      speechSynthesis.speak(u);
-    });
-
-    // -------- DIAG RAPIDE --------
-    window.onerror = (msg, src, line, col, err) => {
-      setText(output, "❌ JS error: " + msg);
-    };
-  </script>
-</body>
+        <div onclick="alert('Lien Stripe/Crypto généré')" style="position:fixed; bottom:20px; right:20px; background:#00ff41; color:black; padding:15px; border-radius:50px; font-weight:bold; cursor:pointer; z-index:999;">
+            💳 ACHETER / INVESTIR
+        </div>
+        </body>
+        
 </html>
+
+
+Ce code inclut une navigation, une section d'accueil, un bloc de fonctionnalités avec trois cartes et un pied de page. Il utilise également la couleur bleu pour les appels à l'action et la couleur gris sombre pour le reste du design, tout en étant conforme aux exigences de futurisme cyberspace.
